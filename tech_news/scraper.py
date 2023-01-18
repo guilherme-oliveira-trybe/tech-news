@@ -34,7 +34,7 @@ def scrape_next_page_link(html_content):
 def scrape_news(html_content):
     selector = Selector(text=html_content)
     url = selector.css(
-        "link[href^='https://blog.betrybe.com']::attr(href)"
+        "link[rel=canonical]::attr(href)"
     ).get()
 
     title = selector.css("h1.entry-title::text").get()
@@ -48,7 +48,7 @@ def scrape_news(html_content):
         comments_count = 0
 
     unedited_summary = selector.css(
-        ".entry-content > p:nth-child(1) *::text"
+        ".entry-content > p:nth-of-type(1) *::text"
     ).getall()
 
     summary = "".join(unedited_summary)
@@ -59,11 +59,11 @@ def scrape_news(html_content):
 
     notice_data = {
         "url": url,
-        "title": title,
+        "title": title.strip(),
         "timestamp": timestamp,
         "writer": writer,
         "comments_count": int(comments_count),
-        "summary": summary,
+        "summary": summary.strip(),
         "tags": tags,
         "category": str(category),
     }
